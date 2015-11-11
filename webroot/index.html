@@ -1,0 +1,70 @@
+<html>
+ <head>
+  <title>IGmail</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/bootstrap-3.3.5/bootstrap.min.css">
+  <link rel="stylesheet" href="css/IGmail.css">
+  <script src="asset/jquery-2.1.4.js"></script>
+  <script>
+   $(document).ready(function() {
+     var table = $("#mails");
+     $.get('/mails/', function(array) {
+       $.each(array, function(index, mail) {
+          table.append('<tr id="row' + index + '"><td>' + index + '</td><td>' + mail.subject + '</td><td>' + mail.from + '</td></tr>');
+       });
+       
+       var detail = $("#detail");
+       for(index in array) {
+          (function(idx) {  // I hate JS !
+            $("#row" + idx).click(function() {
+              $.get('/mails/' + idx, function(mail) {
+                detail.html('<div class="page-header"><h2>' + mail.subject + '</h2></div> <h4>From: ' + mail.from + '</h4>\n' + '<br/>' + mail.body);
+              });
+            });
+          })(index);
+       }
+     });
+    });
+  </script>
+ </head>
+ <body>
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <div class="navbar-brand"><span class="glyphicon glyphicon-envelope"></span> IGmail </div>
+      </div>
+      <div>
+        <form class="navbar-form navbar-right">
+          <div class="input-group"> 
+            <input type="text" class="form-control" placeholder="Filter" style="text-align:right">
+            <span class="input-group-btn">
+              <button class="btn btn-success glyphicon glyphicon-search" type="button"></button>
+            </span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <div class="jumbotron">  
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-3 sidebar">      
+            <table class="table green-border" id="mails">
+              <thead>
+               <tr>
+                <th></th>
+                <th>Subject</th>
+                <th>From</th></tr>
+              </thead>
+            </table>
+        </div>
+        <div class="col-sm-3 col-md-9 content">      
+          <div id="detail">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ </body>
+</html>
